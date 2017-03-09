@@ -1,0 +1,62 @@
+package me.Ckay.gym.utils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import me.Ckay.gym.PixelGym;
+
+public class Utils
+{
+	public static void saveResource(PixelGym plugin, String resourcePath, boolean replace)
+	{
+		if (resourcePath == null || resourcePath.equals(""))
+		{
+			throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+		}
+
+		resourcePath = resourcePath.replace('\\', '/');
+		InputStream in = PixelGym.class.getClassLoader().getResourceAsStream(resourcePath);
+
+		if (in == null)
+		{
+			throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found");
+		}
+
+		File outFile = new File(plugin.getConfigDir().toFile(), resourcePath);
+		int lastIndex = resourcePath.lastIndexOf('/');
+		File outDir = new File(plugin.getConfigDir().toFile(), resourcePath.substring(0, lastIndex >= 0 ? lastIndex : 0));
+
+		if (!outDir.exists())
+		{
+			outDir.mkdirs();
+		}
+
+		try
+		{
+			if (!outFile.exists() || replace)
+			{
+				FileOutputStream out = new FileOutputStream(outFile);
+				byte[] buf = new byte[1024];
+				int len;
+
+				while ((len = in.read(buf)) > 0)
+				{
+					out.write(buf, 0, len);
+				}
+
+				out.close();
+				in.close();
+			}
+			else
+			{
+				plugin.getLogger().warn("Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+			}
+		}
+		catch (IOException ex)
+		{
+			plugin.getLogger().warn("Could not save " + outFile.getName() + " to " + outFile, ex);
+		}
+	}
+}
