@@ -3087,3 +3087,4 @@ public class CommandListener
 		return this.plugin.getConfig();
 	}
 }
+//test
