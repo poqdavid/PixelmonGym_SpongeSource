@@ -51,7 +51,7 @@ public class Utils
 			}
 			else
 			{
-				plugin.getLogger().warn("Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+				plugin.getLogger().warn("Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists. Thats a good thing!");
 			}
 		}
 		catch (IOException ex)

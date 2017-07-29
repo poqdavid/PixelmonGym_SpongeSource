@@ -4,6 +4,8 @@ depend: [Vault]
 version: 6.5
 author: ABkayCkay
 permissions:
+  pixelgym.nomessage:
+    description: Show no on join message!
   pixelgym.leader:
     description: Give access to Open/Close Gym.
   pixelgym.gym1:

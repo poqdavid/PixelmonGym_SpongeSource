@@ -28,6 +28,10 @@ config:
   # Do you want the scoreboard feature at all?
   # Set to "False" if you do not want the scoreboard feature.
   scoreboard: 'True'
+
+  # Do you want people to be given a badge showcase item at all?
+  # If not then set to false, if so then set to true.
+  enableshowcase: 'False'
   
   # Do you want the user to be added to a certain group? For example "Gym Leader".
   # If you do, when you do /pixelgym addleader (username) <gym#> it will add them to the GymLeader group
@@ -81,9 +85,14 @@ config:
   # This is using your economy plugin. (/pay (player) (amount))
   gymfeeamount: 100
   
-  # Here you can customize the global cooldown time for gym's if players lose.
-  # This is in minutes, so by default it is 60 minutes (1 hour).
-  cooldowntime: 60
+  # Only just installed the plugin? Want to allow players to redeem physical badges to virtual badges themselves?
+  # Then set this to "True", users need the badge in there hand whilst doing /gym redeem.
+  enableredeem: False
+  
+  # If you have enableredeem enabled and want to remove the players physical badge upon using /gym redeem
+  # Then set this to true. However if you want them to keep the physical badge for display, set to "False".
+  # WARNING!! Letting them keep the physical badge suggests they may let fellow players redeem virtual badges with it.
+  takebadge: True
   
   # This setting should be kept/set to true if you want people to rank through gym's in a structured order.
   # For example 1-8.
@@ -112,6 +121,9 @@ config:
   # What level cap is the gym? This will show on /gym list
   # Type the gym's level cap in the quotations below ('')
   gym1lvlcap: '25'
+  
+  # Specific gym cooldown time upon the challenger loosing the gym in minutes
+  gym1cooldowntime: 120
   
   # Using /pixelgym addleader now has a built in ability to add pokemon to the gym leader that you set here.
   # This must be enabled above in the global config section.
@@ -145,9 +157,10 @@ config:
 
   gym2: 'Grass'
   gym2colour: '&2'
-  gym2badge: pixelmon:forest_badge
+  gym2badge: pixelmon:rainbow_badge
   gym2enabled: 'True'
   gym2lvlcap: '35'
+  gym2cooldowntime: 100
   gym2poke1: 'Tangela'
   gym2poke1lvl: '35'
   gym2poke2: 'Grovyle'
@@ -168,9 +181,10 @@ config:
 
   gym3: 'Flying'
   gym3colour: '&b'
-  gym3badge: pixelmon:feather_badge
+  gym3badge: pixelmon:zephyr_badge
   gym3enabled: 'True'
   gym3lvlcap: '45'
+  gym3cooldowntime: 60
   gym3poke1: 'Spearow'
   gym3poke1lvl: '45'
   gym3poke2: 'Pidgeotto'
@@ -191,9 +205,10 @@ config:
 
   gym4: 'Poison'
   gym4colour: '&5'
-  gym4badge: pixelmon:fog_badge
+  gym4badge: pixelmon:soul_badge
   gym4enabled: 'True'
   gym4lvlcap: '55'
+  gym4cooldowntime: 60
   gym4poke1: 'Arbok'
   gym4poke1lvl: '55'
   gym4poke2: 'Muk'
@@ -214,9 +229,10 @@ config:
 
   gym5: 'Psychic'
   gym5colour: '&d'
-  gym5badge: pixelmon:soul_badge
+  gym5badge: pixelmon:marsh_badge
   gym5enabled: 'True'
   gym5lvlcap: '65'
+  gym5cooldowntime: 60
   gym5poke1: 'Kadabra'
   gym5poke1lvl: '65'
   gym5poke2: 'Hypno'
@@ -237,9 +253,10 @@ config:
 
   gym6: 'Fire'
   gym6colour: '&c'
-  gym6badge: pixelmon:heat_badge
+  gym6badge: pixelmon:volcano_badge
   gym6enabled: 'True'
   gym6lvlcap: '75'
+  gym6cooldowntime: 60
   gym6poke1: 'Vulpix'
   gym6poke1lvl: '75'
   gym6poke2: 'Charmander'
@@ -260,9 +277,10 @@ config:
 
   gym7: 'Water'
   gym7colour: '&9'
-  gym7badge: pixelmon:wave_badge
+  gym7badge: pixelmon:cascade_badge
   gym7enabled: 'True'
   gym7lvlcap: '85'
+  gym7cooldowntime: 60
   gym7poke1: 'Squirtle'
   gym7poke1lvl: '85'
   gym7poke2: 'Prinplup'
@@ -283,9 +301,10 @@ config:
 
   gym8: 'Normal'
   gym8colour: '&7'
-  gym8badge: pixelmon:basic_badge
+  gym8badge: pixelmon:plain_badge
   gym8enabled: 'True'
   gym8lvlcap: '95'
+  gym8cooldowntime: 60
   gym8poke1: 'Raticate'
   gym8poke1lvl: '95'
   gym8poke2: 'Lickitung'
@@ -306,9 +325,10 @@ config:
 
   gym9: 'Various'
   gym9colour: '&1'
-  gym9badge: 9
+  gym9badge: pixelmon:earth_badge
   gym9enabled: 'False'
   gym9lvlcap: '10'
+  gym9cooldowntime: 60
   gym9poke1: 'Raticate'
   gym9poke1lvl: '95'
   gym9poke2: 'Lickitung'
@@ -329,9 +349,10 @@ config:
 
   gym10: 'Flying'
   gym10colour: '&2'
-  gym10badge: 10
+  gym10badge: pixelmon:feather_badge
   gym10enabled: 'False'
   gym10lvlcap: '20'
+  gym10cooldowntime: 60
   gym10poke1: 'Raticate'
   gym10poke1lvl: '95'
   gym10poke2: 'Lickitung'
@@ -352,9 +373,10 @@ config:
 
   gym11: 'Bug'
   gym11colour: '&3'
-  gym11badge: 11
+  gym11badge: pixelmon:hive_badge
   gym11enabled: 'False'
   gym11lvlcap: '40'
+  gym11cooldowntime: 60
   gym11poke1: 'Raticate'
   gym11poke1lvl: '95'
   gym11poke2: 'Lickitung'
@@ -375,9 +397,10 @@ config:
 
   gym12: 'Normal'
   gym12colour: '&4'
-  gym12badge: 12
+  gym12badge: pixelmon:balance_badge
   gym12enabled: 'False'
   gym12lvlcap: '50'
+  gym12cooldowntime: 60
   gym12poke1: 'Raticate'
   gym12poke1lvl: '95'
   gym12poke2: 'Lickitung'
@@ -398,9 +421,10 @@ config:
 
   gym13: 'Ghost'
   gym13colour: '&5'
-  gym13badge: 13
+  gym13badge: pixelmon:fog_badge
   gym13enabled: 'False'
   gym13lvlcap: '60'
+  gym13cooldowntime: 60
   gym13poke1: 'Raticate'
   gym13poke1lvl: '95'
   gym13poke2: 'Lickitung'
@@ -421,9 +445,10 @@ config:
 
   gym14: 'Fighting'
   gym14colour: '&6'
-  gym14badge: 14
+  gym14badge: pixelmon:storm_badge
   gym14enabled: 'False'
   gym14lvlcap: '70'
+  gym14cooldowntime: 60
   gym14poke1: 'Raticate'
   gym14poke1lvl: '95'
   gym14poke2: 'Lickitung'
@@ -444,9 +469,10 @@ config:
 
   gym15: 'Steel'
   gym15colour: '&7'
-  gym15badge: 15
+  gym15badge: pixelmon:mineral_badge
   gym15enabled: 'False'
   gym15lvlcap: '80'
+  gym15cooldowntime: 60
   gym15poke1: 'Raticate'
   gym15poke1lvl: '95'
   gym15poke2: 'Lickitung'
@@ -467,9 +493,10 @@ config:
 
   gym16: 'Ice'
   gym16colour: '&8'
-  gym16badge: 16
+  gym16badge: pixelmon:glacier_badge
   gym16enabled: 'False'
   gym16lvlcap: '90'
+  gym16cooldowntime: 60
   gym16poke1: 'Raticate'
   gym16poke1lvl: '95'
   gym16poke2: 'Lickitung'
@@ -490,9 +517,10 @@ config:
 
   gym17: 'Dragon'
   gym17colour: '&9'
-  gym17badge: 17
+  gym17badge: pixelmon:rising_badge
   gym17enabled: 'False'
   gym17lvlcap: '20'
+  gym17cooldowntime: 60
   gym17poke1: 'Raticate'
   gym17poke1lvl: '95'
   gym17poke2: 'Lickitung'
@@ -513,9 +541,10 @@ config:
 
   gym18: 'Fairy'
   gym18colour: '&d'
-  gym18badge: 18
+  gym18badge: pixelmon:beacon_badge
   gym18enabled: 'False'
   gym18lvlcap: '30'
+  gym18cooldowntime: 60
   gym18poke1: 'Raticate'
   gym18poke1lvl: '95'
   gym18poke2: 'Lickitung'
@@ -536,9 +565,10 @@ config:
 
   gym19: 'Electric'
   gym19colour: '&e'
-  gym19badge: 19
+  gym19badge: pixelmon:thunder_badge
   gym19enabled: 'False'
   gym19lvlcap: '40'
+  gym19cooldowntime: 60
   gym19poke1: 'Raticate'
   gym19poke1lvl: '95'
   gym19poke2: 'Lickitung'
@@ -559,9 +589,10 @@ config:
 
   gym20: 'Grass'
   gym20colour: '&2'
-  gym20badge: 20
+  gym20badge: pixelmon:forest_badge
   gym20enabled: 'False'
   gym20lvlcap: '50'
+  gym20cooldowntime: 60
   gym20poke1: 'Raticate'
   gym20poke1lvl: '95'
   gym20poke2: 'Lickitung'
@@ -582,9 +613,10 @@ config:
 
   gym21: 'Poison'
   gym21colour: '&d'
-  gym21badge: 21
+  gym21badge: pixelmon:toxic_badge
   gym21enabled: 'False'
   gym21lvlcap: '60'
+  gym21cooldowntime: 60
   gym21poke1: 'Raticate'
   gym21poke1lvl: '95'
   gym21poke2: 'Lickitung'
@@ -605,9 +637,10 @@ config:
 
   gym22: 'Psychic'
   gym22colour: '&5'
-  gym22badge: 22
+  gym22badge: pixelmon:mind_badge
   gym22enabled: 'False'
   gym22lvlcap: '70'
+  gym22cooldowntime: 60
   gym22poke1: 'Raticate'
   gym22poke1lvl: '95'
   gym22poke2: 'Lickitung'
@@ -628,9 +661,10 @@ config:
 
   gym23: 'Fire'
   gym23colour: '&c'
-  gym23badge: 23
+  gym23badge: pixelmon:heat_badge
   gym23enabled: 'False'
   gym23lvlcap: '80'
+  gym23cooldowntime: 60
   gym23poke1: 'Raticate'
   gym23poke1lvl: '95'
   gym23poke2: 'Lickitung'
@@ -651,9 +685,10 @@ config:
 
   gym24: 'Ground'
   gym24colour: '&6'
-  gym24badge: 24
+  gym24badge: pixelmon:quake_badge
   gym24enabled: 'False'
   gym24lvlcap: '90'
+  gym24cooldowntime: 60
   gym24poke1: 'Raticate'
   gym24poke1lvl: '95'
   gym24poke2: 'Lickitung'
@@ -674,9 +709,10 @@ config:
 
   gym25: 'Various'
   gym25colour: '&1'
-  gym25badge: 25
+  gym25badge: pixelmon:trio_badge
   gym25enabled: 'False'
   gym25lvlcap: '10'
+  gym25cooldowntime: 60
   gym25poke1: 'Raticate'
   gym25poke1lvl: '95'
   gym25poke2: 'Lickitung'
@@ -697,9 +733,10 @@ config:
 
   gym26: 'Flying'
   gym26colour: '&2'
-  gym26badge: 26
+  gym26badge: pixelmon:jet_badge
   gym26enabled: 'False'
   gym26lvlcap: '20'
+  gym26cooldowntime: 60
   gym26poke1: 'Raticate'
   gym26poke1lvl: '95'
   gym26poke2: 'Lickitung'
@@ -720,9 +757,10 @@ config:
 
   gym27: 'Bug'
   gym27colour: '&3'
-  gym27badge: 27
+  gym27badge: pixelmon:insect_badge
   gym27enabled: 'False'
   gym27lvlcap: '40'
+  gym27cooldowntime: 60
   gym27poke1: 'Raticate'
   gym27poke1lvl: '95'
   gym27poke2: 'Lickitung'
@@ -743,9 +781,10 @@ config:
 
   gym28: 'Normal'
   gym28colour: '&4'
-  gym28badge: 28
+  gym28badge: pixelmon:basic_badge
   gym28enabled: 'False'
   gym28lvlcap: '50'
+  gym28cooldowntime: 60
   gym28poke1: 'Raticate'
   gym28poke1lvl: '95'
   gym28poke2: 'Lickitung'
@@ -766,9 +805,10 @@ config:
 
   gym29: 'Ghost'
   gym29colour: '&5'
-  gym29badge: 29
+  gym29badge: pixelmon:relic_badge
   gym29enabled: 'False'
   gym29lvlcap: '60'
+  gym29cooldowntime: 60
   gym29poke1: 'Raticate'
   gym29poke1lvl: '95'
   gym29poke2: 'Lickitung'
@@ -789,9 +829,10 @@ config:
 
   gym30: 'Fighting'
   gym30colour: '&6'
-  gym30badge: 30
+  gym30badge: pixelmon:cobble_badge
   gym30enabled: 'False'
   gym30lvlcap: '70'
+  gym30cooldowntime: 60
   gym30poke1: 'Raticate'
   gym30poke1lvl: '95'
   gym30poke2: 'Lickitung'
@@ -812,9 +853,10 @@ config:
 
   gym31: 'Steel'
   gym31colour: '&7'
-  gym31badge: 31
+  gym31badge: pixelmon:mine_badge
   gym31enabled: 'False'
   gym31lvlcap: '80'
+  gym31cooldowntime: 60
   gym31poke1: 'Raticate'
   gym31poke1lvl: '95'
   gym31poke2: 'Lickitung'
@@ -835,9 +877,10 @@ config:
 
   gym32: 'Ice'
   gym32colour: '&8'
-  gym32badge: 32
+  gym32badge: pixelmon:icicle_badge
   gym32enabled: 'False'
   gym32lvlcap: '90'
+  gym32cooldowntime: 60
   gym32poke1: 'Raticate'
   gym32poke1lvl: '95'
   gym32poke2: 'Lickitung'

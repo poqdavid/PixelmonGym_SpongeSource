@@ -61,7 +61,7 @@ import me.Ckay.gym.config.SettingsManager;
 import me.Ckay.gym.scoreboard.ScoreboardManager;
 import me.Ckay.gym.utils.Utils;
 
-@Plugin(id = "pixelgym", name = "PixelmonGym", version = "1.1")
+@Plugin(id = "pixelgym", name = "PixelmonGym", version = "1.2")
 public class PixelGym
 {
 	private static PixelGym instance;
@@ -185,6 +185,7 @@ public class PixelGym
 	boolean warpperm;
 	boolean tpacceptperm;
 	boolean randomtpperm;
+	boolean showcase;
 
 	public Date now;
 	public SimpleDateFormat format;
@@ -273,7 +274,50 @@ public class PixelGym
 		Sponge.getScheduler().createTaskBuilder().execute(() -> {
 			PixelGym.this.updateSigns();
 		}).intervalTicks(20L).submit(this);
+		
+		if (getConfig().getString("config.enableshowcase").equalsIgnoreCase("True")) {
+			showcase = true;
+		}
+		else if (getConfig().getString("config.enableshowcase").equalsIgnoreCase("False")) {
+			showcase = false;
+		}
+		
+//		for (int i = 1; i <= 32; i++) {
+//    		
+//    		int u = i +1;
+//
+//    		if (this.getConfig().getString("config.gym"+i+"enabled").equalsIgnoreCase("True")) {
+//    			if (i == 32) {
+//    				if ((this.settings.getBadge().get("Players." + p.getUniqueId() +".Badges.gym"+i) != null)) {
+//    					if (this.settings.getBadge().get("Players." + p.getUniqueId() + ".Badges.gym"+i).equals("Won")) {
+//        				//ParticleEffect.FIREWORKS_SPARK.display(1, 1, 1, 0, 10, p.getLocation(), 100);
+//        				//ParticleEffect.FIREWORKS_SPARK.display(offsetX, offsetY, offsetZ, speed, amount, center, range);
+//        				}
+//    				}
+//    				
+//    			}
+//    			else {
+//    			if (this.getConfig().getString("config.gym"+u+"enabled").equalsIgnoreCase("False")) {
+//    				
+//    				if ((this.settings.getBadge().get("Players." + p.getUniqueId() +".Badges.gym"+i) != null)) {
+//    					if (this.settings.getBadge().get("Players." + p.getUniqueId() + ".Badges.gym"+i).equals("Won")) {
+//    						//ParticleEffect.FIREWORKS_SPARK.display(1, 1, 1, 0, 10, p.getLocation(), 100);
+//    						}
+//    					}
+//    				}
+//    			
+//    			}
+//    		}
+//
+//    	}
+		
+		for (int i = 1; i <= 32; i++)
+		{
+			getConfig().set("config.gym" + i + "stat", "Closed");
+		}
+		
 	}
+	
 
 	private void initVars()
 	{
@@ -689,11 +733,11 @@ public class PixelGym
 
 				if (count == 0)
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.e4").append(i).append("colour").toString())) + "The " + getConfig().getString(new StringBuilder("config.e4").append(i).toString()) + " Elite 4 Level is now ", TextColors.RED, "Closed"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.e4").append(i).append("colour").toString())).getChildren().get(0).getColor() + "The " + getConfig().getString(new StringBuilder("config.e4").append(i).toString()) + " Elite 4 Level is now ", TextColors.RED, "Closed"));
 
 					getConfig().set("config.e4" + i + "stat", "Closed");
 
-					ScoreboardManager.board.getScores(Text.of(TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.e4").append(i).append("colour").toString())), getConfig().getString(new StringBuilder("config.e4").append(i).toString()) + " " + getConfig().getString("config.e4ab")))
+					ScoreboardManager.board.getScores(Text.of(TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.e4").append(i).append("colour").toString())).getChildren().get(0).getColor(), getConfig().getString(new StringBuilder("config.e4").append(i).toString()) + " " + getConfig().getString("config.e4ab")))
 						.forEach(t -> t.setScore(0));
 				}
 			}
@@ -715,12 +759,19 @@ public class PixelGym
 				if (count == 0)
 				{
 					p.sendMessage(Text.of("You are the last" + getConfig().getString(new StringBuilder("pixelgym.gym").append(i).toString()) + "gym leader" + i));
+					
 					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.gym")
-						.append(i).append("colour").toString())) + "The " + getConfig().getString(new StringBuilder("config.gym").append(i).toString()) + " Gym is now ", TextColors.RED, "Closed"));
+							.append(i).append("colour").toString())).getChildren().get(0).getColor(), "The " + getConfig().getString(new StringBuilder("config.gym").append(i).toString()) + " Gym is now ", TextColors.RED, "Closed"));
+					
+					//MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.gym")
+							//.append(i).append("colour").toString())).getChildren().get(0).getColor(), "The " + getConfig().getString(new StringBuilder("config.gym").append(i).toString()) + " Gym is now ", TextColors.RED, "Closed"));
+
+					//MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.gym")
+						//.append(i).append("colour").toString())).getChildren().get(0).getColor() + "The " + getConfig().getString(new StringBuilder("config.gym").append(i).toString()) + " Gym is now ", TextColors.RED, "Closed"));
 
 					getConfig().set("config.gym" + i + "stat", "Closed");
 
-					ScoreboardManager.board.getScores(Text.of(TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.gym").append(i).append("colour").toString())), getConfig().getString(new StringBuilder("config.gym").append(i).toString()))).forEach(t -> t.setScore(0));
+					ScoreboardManager.board.getScores(Text.of(TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString(new StringBuilder("config.gym").append(i).append("colour").toString())).getChildren().get(0).getColor(), getConfig().getString(new StringBuilder("config.gym").append(i).toString()))).forEach(t -> t.setScore(0));
 				}
 			}
 		}
@@ -754,7 +805,7 @@ public class PixelGym
 		{
 			if (this.settings.getExtras().get("showcase." + p.getUniqueId()) != null)
 			{
-				if (this.settings.getExtras().get("showcase." + p.getUniqueId()).equals("true"))
+				if (this.settings.getExtras().get("showcase." + p.getUniqueId()).equals("true") && showcase == true)
 				{
 					p.getInventory().offer(clock);
 				}
@@ -762,7 +813,9 @@ public class PixelGym
 			}
 			else
 			{
-				p.getInventory().offer(clock);
+				if (showcase == true) {
+					p.getInventory().offer(clock);
+				}
 			}
 		}
 		if (getConfig().getString("config.joinmessage").equals("True"))
@@ -783,7 +836,7 @@ public class PixelGym
 
 		if (p.getName().equals("ABkayCkay"))
 		{
-			MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextColors.GRAY, "The PixelmonGym Plugin Dev, ", TextColors.AQUA, TextStyles.BOLD, "ABkayCkay", TextColors.RESET, TextColors.GRAY, " has come online!"));
+			MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextColors.GRAY, "The PixelmonGym Plugin Dev, ", TextColors.AQUA, TextStyles.BOLD, "ABkayCkay", TextStyles.RESET, TextColors.GRAY, " has come online!"));
 
 			for (Player players : Sponge.getServer().getOnlinePlayers())
 			{
@@ -806,224 +859,224 @@ public class PixelGym
 			{
 				if (enablegym1.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym1colour")), "A " + getConfig().getString("config.gym1") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym1colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym1") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym2"))
 			{
 				if (enable2.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym2colour")), "A " + getConfig().getString("config.gym2") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym2colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym2") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym3"))
 			{
 				if (enable3.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym3colour")), "A " + getConfig().getString("config.gym3") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym3colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym3") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym4"))
 			{
 				if (enable4.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym4colour")), "A " + getConfig().getString("config.gym4") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym4colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym4") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym5"))
 			{
 				if (enable5.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym5colour")), "A " + getConfig().getString("config.gym5") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym5colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym5") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym6"))
 			{
 				if (enable6.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym6colour")), "A " + getConfig().getString("config.gym6") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym6colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym6") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym7"))
 			{
 				if (enable7.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym7colour")), "A " + getConfig().getString("config.gym7") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym7colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym7") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym8"))
 			{
 				if (enable8.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym8colour")), "A " + getConfig().getString("config.gym8") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym8colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym8") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym9"))
 			{
 				if (enable9.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym9colour")), "A " + getConfig().getString("config.gym9") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym9colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym9") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym10"))
 			{
 				if (enablegym10.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym10colour")), "A " + getConfig().getString("config.gym10") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym10colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym10") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym11"))
 			{
 				if (enablegym11.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym11colour")), "A " + getConfig().getString("config.gym11") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym11colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym11") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym12"))
 			{
 				if (enablegym12.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym12colour")), "A " + getConfig().getString("config.gym12") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym12colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym12") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym13"))
 			{
 				if (enablegym13.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym13colour")), "A " + getConfig().getString("config.gym13") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym13colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym13") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym14"))
 			{
 				if (enablegym14.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym14colour")), "A " + getConfig().getString("config.gym14") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym14colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym14") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym15"))
 			{
 				if (enablegym15.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym15colour")), "A " + getConfig().getString("config.gym15") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym15colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym15") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym16"))
 			{
 				if (enablegym16.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym16colour")), "A " + getConfig().getString("config.gym16") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym16colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym16") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym17"))
 			{
 				if (enablegym17.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym17colour")), "A " + getConfig().getString("config.gym17") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym17colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym17") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym18"))
 			{
 				if (enablegym18.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym18colour")), "A " + getConfig().getString("config.gym18") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym18colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym18") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym19"))
 			{
 				if (enablegym19.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym19colour")), "A " + getConfig().getString("config.gym19") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym19colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym19") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym20"))
 			{
 				if (enable20.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym20colour")), "A " + getConfig().getString("config.gym20") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym20colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym20") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym21"))
 			{
 				if (enable21.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym21colour")), "A " + getConfig().getString("config.gym21") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym21colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym21") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym22"))
 			{
 				if (enable22.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym22colour")), "A " + getConfig().getString("config.gym22") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym22colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym22") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym23"))
 			{
 				if (enable23.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym23colour")), "A " + getConfig().getString("config.gym23") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym23colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym23") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym24"))
 			{
 				if (enable24.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym24colour")), "A " + getConfig().getString("config.gym24") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym24colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym24") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym25"))
 			{
 				if (enable25.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym25colour")), "A " + getConfig().getString("config.gym25") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym25colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym25") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym26"))
 			{
 				if (enable26.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym26colour")), "A " + getConfig().getString("config.gym26") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym26colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym26") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym27"))
 			{
 				if (enable27.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym27colour")), "A " + getConfig().getString("config.gym27") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym27colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym27") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym28"))
 			{
 				if (enable28.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym28colour")), "A " + getConfig().getString("config.gym28") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym28colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym28") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym29"))
 			{
 				if (enable29.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym29colour")), "A " + getConfig().getString("config.gym29") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym29colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym29") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym30"))
 			{
 				if (enable30.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym30colour")), "A " + getConfig().getString("config.gym30") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym30colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym30") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym31"))
 			{
 				if (enable31.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym31colour")), "A " + getConfig().getString("config.gym31") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym31colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym31") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.gym32"))
 			{
 				if (enable32.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym32colour")), "A " + getConfig().getString("config.gym32") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.gym32colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.gym32") + " Gym Leader has come online!" + " (" + p.getName() + ")"));
 				}
 
 			}
@@ -1031,29 +1084,35 @@ public class PixelGym
 			{
 				if (enablee4.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e41colour")), "A " + getConfig().getString("config.e41") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e41colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.e41") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.e42"))
 			{
 				if (enablee4.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e42colour")), "A " + getConfig().getString("config.e42") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e42colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.e42") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.e43"))
 			{
 				if (enablee4.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e43colour")), "A " + getConfig().getString("config.e43") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e43colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.e43") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
 				}
 			}
 			else if (p.hasPermission("pixelgym.e44"))
 			{
 				if (enablee4.equalsIgnoreCase("true"))
 				{
-					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e44colour")), "A " + getConfig().getString("config.e44") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
+					MessageChannel.TO_ALL.send(Text.of(TextColors.DARK_GRAY, "[", TextColors.AQUA, getConfig().getString("config.title"), TextColors.DARK_GRAY, "] ", TextSerializers.FORMATTING_CODE.deserialize(getConfig().getString("config.e44colour")).getChildren().get(0).getColor(), "A " + getConfig().getString("config.e44") + " " + getConfig().getString("config.e4colour") + getConfig().getString("config.e4") + " Leader has come online!" + " (" + p.getName() + ")"));
 				}
+			}
+			else if (p.hasPermission("pixelgym.nomessage"))
+			{
+
+					//do nothing
+				
 			}
 		}
 	}
