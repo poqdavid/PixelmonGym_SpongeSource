@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-version = "1.0"
-group= "me.ckay.pixelgym"
+version = "2.5"
+group = "me.ckay.pixelgym"
 archivesBaseName = "PixelGym"
 
 sourceCompatibility = "1.8"
@@ -11,11 +11,11 @@ targetCompatibility = "1.8"
 repositories {
     mavenCentral()
     maven {
-        name 'Sponge maven repo'
+        name 'sponge'
         url 'http://repo.spongepowered.org/maven'
     }
 }
 
 dependencies {
-	compile "org.spongepowered:spongeapi:5.1.0-SNAPSHOT"
+	compile "org.spongepowered:spongeapi:6.0.0"
 }

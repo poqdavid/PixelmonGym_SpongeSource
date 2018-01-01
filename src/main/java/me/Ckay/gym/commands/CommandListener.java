@@ -19,7 +19,8 @@ import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.item.ItemType;
@@ -30,6 +31,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
+import org.spongepowered.api.scheduler.Scheduler;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
@@ -49,6 +51,7 @@ import me.Ckay.gym.PixelGym;
 import me.Ckay.gym.config.PluginConfiguration;
 import me.Ckay.gym.scoreboard.ScoreboardManager;
 
+@SuppressWarnings("unused")
 public class CommandListener
 {
 	private PixelGym plugin;
@@ -342,9 +345,12 @@ public class CommandListener
 						}
 
 						int fee = getConfig().getInt("config.prestige_pay");
+						
 
 						this.plugin.getEconomy().getOrCreateAccount(p.getUniqueId()).get()
-							.deposit(this.plugin.getEconomy().getDefaultCurrency(), new BigDecimal(fee), Cause.of(NamedCause.source(this.plugin)));
+							.deposit(this.plugin.getEconomy().getDefaultCurrency(), new BigDecimal(fee), Cause.of(EventContext.builder()
+						            .add(EventContextKeys.PLUGIN, this.plugin.getContainer())
+						            .build(), this.plugin.getContainer()));
 
 						p.sendMessage(Text.of(TextColors.GOLD, "You have been payed $" + fee + "! You may now re-do all the gym's!"));
 					}
@@ -2218,12 +2224,12 @@ public class CommandListener
 										this.plugin.cooldownTask.get(gym3).remove(po);
 										this.plugin.cooldownGym.get(gym3).remove(po);
 
-										Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
+										//Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
 									}
 								}
 								else
 								{
-									Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
+									//Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
 								}
 							}).name(String.valueOf(gym)));
 							((Task.Builder) ((Map) this.plugin.cooldownTask.get(Integer.valueOf(gym))).get(po)).delayTicks(20L).intervalTicks(1200L).submit(PixelGym.getInstance());
@@ -2435,9 +2441,8 @@ public class CommandListener
 								{
 									this.plugin.settings.getBadge().set("Players." + playerGive.getUniqueId() + ".Badges.gym" + gym, "Won");
 									this.plugin.settings.saveBadges();
-
-									p.sendMessage(Text.of(TextColors.GREEN, "Gave " + playerGive.getName() + " the gym" + gym + " badge!"));
 								}
+								p.sendMessage(Text.of(TextColors.GREEN, "Gave " + playerGive.getName() + " the gym" + gym + " badge!"));
 							}
 							else
 							{
@@ -2628,7 +2633,6 @@ public class CommandListener
 
 				if (args[1].matches("(gym|GYM)[1-9]?[0-9]") || gymName == true)
 				{
-
 					// int i = gym - 1;
 
 					if (gymName == true)
@@ -2691,15 +2695,19 @@ public class CommandListener
 								// String gymArg3 = args[1].replace("gym", "");
 								// int gym3 = Integer.parseInt(gymArg3);
 
+								System.out.println(this.plugin.queues);
+								System.out.println(this.plugin.inArena);
 								((List) this.plugin.queues.get(Integer.valueOf(gym))).remove(po);
 								((List) this.plugin.inArena.get(Integer.valueOf(gym))).remove(po);
 								// remove player that lost from inArea and queues.
+								System.out.println(this.plugin.queues);
+								System.out.println(this.plugin.inArena);
 
 								this.plugin.settings.getLogs().set("Leaders." + p.getName() + ".gym" + gym + ".[" + this.plugin.format.format(this.plugin.now) + "]", playerLost.getName() + " - Lost");
 								this.plugin.settings.saveLogs();
 								// set logs as player lost and save
 								// START cooldown
-								((Map) this.plugin.cooldownTime.get(Integer.valueOf(gym3))).put(po, Integer.valueOf(time));
+								((Map) this.plugin.cooldownTime.get(Integer.valueOf(gym))).put(po, Integer.valueOf(time));
 								// get time from config and put it in cooldownTime
 
 								((List) this.plugin.cooldownGym.get(Integer.valueOf(gym))).add(po);
@@ -2712,6 +2720,7 @@ public class CommandListener
 										// if player is in the cooldown, continue. Else cancel.
 										this.plugin.cooldownTime.get(gym3).put(po, this.plugin.cooldownTime.get(gym3).get(po) - 1);
 										// each run, take 1 from time
+										System.out.println(this.plugin.cooldownTime);
 
 										if (this.plugin.cooldownTime.get(gym3).get(po) == 0)
 										{
@@ -2719,13 +2728,26 @@ public class CommandListener
 											this.plugin.cooldownTime.get(gym3).remove(po);
 											this.plugin.cooldownTask.get(gym3).remove(po);
 											this.plugin.cooldownGym.get(gym3).remove(po);
+											
+											System.out.println("Removed Player from cooldown");
+											
+//											if (Sponge.getScheduler().getScheduledTasks().contains(po)) {
+//												Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
+//												//Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).contains(po).forEach(t -> t.cancel());
+//												System.out.println("Schedular Cancled");
+//											}
 
-											Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
 										}
 									}
 									else
 									{
-										Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
+										
+//										if (Sponge.getScheduler().getScheduledTasks().contains(po)) {
+//											Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).forEach(t -> t.cancel());
+//											//Sponge.getScheduler().getTasksByName(String.valueOf(gym3)).contains(po).forEach(t -> t.cancel());
+//											System.out.println("Schedular Cancled");
+//										}
+
 									}
 								}).name(String.valueOf(gym)));
 								((Task.Builder) ((Map) this.plugin.cooldownTask.get(Integer.valueOf(gym))).get(po)).delayTicks(20L).intervalTicks(1200L).submit(PixelGym.getInstance());

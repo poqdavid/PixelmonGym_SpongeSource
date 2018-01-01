@@ -663,6 +663,7 @@ public class PixelGym
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Listener
 	public void onLeave1(ClientConnectionEvent.Disconnect l)
 	{
@@ -788,6 +789,7 @@ public class PixelGym
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Listener
 	public void onJoin(ClientConnectionEvent.Join e)
 	{

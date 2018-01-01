@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 import me.Ckay.gym.PixelGym;
 import me.Ckay.gym.scoreboard.ScoreboardManager;
 
+@SuppressWarnings("unused")
 public class PixelGymAdminCommand implements CommandExecutor
 {
 	PixelGym plugin;
