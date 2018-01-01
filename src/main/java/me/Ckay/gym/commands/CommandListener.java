@@ -1239,6 +1239,7 @@ public class CommandListener
 					if (!this.plugin.hasOpen.contains(p.getName()))
 					{
 						this.plugin.hasOpen.add(p.getName());
+						//f
 					}
 
 					p.openInventory(myInventory_, Cause.of(NamedCause.source(this.plugin.getContainer())));
