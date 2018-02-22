@@ -1,21 +1,113 @@
-apply plugin: 'java'
-apply plugin: 'eclipse'
+plugins {
+    id "groovy"
+    id "java"
+    id "idea"
+    id "signing"
 
-version = "2.5"
-group = "me.ckay.pixelgym"
-archivesBaseName = "PixelGym"
+    id "com.github.johnrengelman.shadow" version "2.0.1"
+    id "org.spongepowered.plugin" version "0.8.1"
+    id "com.qixalite.spongestart" version "1.6.2"
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-	
+    //id "net.minecrell.licenser" version "0.3"
+}
+
+group = "${getProjectProperty('m_group')}"
+version = "${getProjectProperty('minecraft_version')}-${getProjectProperty('m_major')}.${getProjectProperty('m_minor')}-${getProjectProperty('m_api')}-${getProjectProperty('m_suffix')}"
+description = "${getProjectProperty('m_description')}"
+
+if (System.getenv().BUILD_NUMBER != null) {
+    version += "+${System.getenv().BUILD_NUMBER}"
+}
+
+compileJava {
+    sourceCompatibility = targetCompatibility = "1.8"
+}
+
 repositories {
-    mavenCentral()
+    jcenter()
     maven {
-        name 'sponge'
-        url 'http://repo.spongepowered.org/maven'
+        name = "Gradle-Plugins"
+        url = "https://plugins.gradle.org/m2"
+    }
+    maven {
+        name = "Sponge"
+        url = "http://repo.spongepowered.org/maven"
+    }
+    maven {
+        name = "Forge"
+        url = "http://files.minecraftforge.net/maven"
+    }
+    maven {
+        name = "Nucleus"
+        url = "http://repo.drnaylor.co.uk/artifactory/list/minecraft"
+    }
+    maven {
+        name = "QuickStart"
+        url = "http://repo.drnaylor.co.uk/artifactory/list/quickstart"
+    }
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
     }
 }
 
 dependencies {
-	compile "org.spongepowered:spongeapi:6.0.0"
+    compile("org.spongepowered:spongeapi:${getProjectProperty('spongeapi')}")
+    compile("javax.validation:validation-api:${getProjectProperty('validation')}")
 }
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", version
+    inputs.property "mcversion", getProjectProperty('minecraft_version')
+    inputs.property "modid", getProjectProperty('m_id')
+    inputs.property "description", getProjectProperty('m_description')
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': getProjectProperty('minecraft_version')
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+    from 'LICENSE.txt'
+}
+
+
+
+signing {
+    required { Project.hasProperty("signing.keyId") }
+    sign configurations.archives, configurations.shadow
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
+}
+
+def String getProjectProperty(String propertyName) {
+    String temp = "null"
+    if (hasProperty(propertyName)) {
+        temp = this.properties[propertyName]
+        project.logger.log(LogLevel.WARN, "Found property: " + propertyName+" value: " + temp)
+    } else {
+        project.logger.log(LogLevel.ERROR, "Property (" + propertyName + ") not found!")
+    }
+    return temp
+}
+
+build.dependsOn(shadowJar)

@@ -61,7 +61,7 @@ import me.Ckay.gym.config.SettingsManager;
 import me.Ckay.gym.scoreboard.ScoreboardManager;
 import me.Ckay.gym.utils.Utils;
 
-@Plugin(id = "pixelgym", name = "PixelmonGym", version = "1.2")
+@Plugin(id = "pixelgym", name = "PixelmonGym", version = "2.5")
 public class PixelGym
 {
 	private static PixelGym instance;

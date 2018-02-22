@@ -9,6 +9,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.SubjectCollection;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -18,6 +19,8 @@ import com.google.common.collect.Sets;
 
 import me.Ckay.gym.PixelGym;
 import me.Ckay.gym.scoreboard.ScoreboardManager;
+
+import java.util.Optional;
 
 @SuppressWarnings("unused")
 public class PixelGymAdminCommand implements CommandExecutor
@@ -116,14 +119,20 @@ public class PixelGymAdminCommand implements CommandExecutor
 					{
 						
 								Player playerTarget = Sponge.getServer().getPlayer(args[2]).orElse(null);
-								Subject subject = playerTarget.getContainingCollection().get(playerTarget.getIdentifier());
+								//Subject subject = playerTarget.getContainingCollection().get(playerTarget.getIdentifier());
+
+						        SubjectCollection sc = playerTarget.getContainingCollection();
+						        Optional<Subject> subjO = sc.getSubject(playerTarget.getIdentifier());
+								Subject subject = subjO.orElse(sc.getDefaults());
+
 								PermissionService permService = Sponge.getServiceManager().provide(PermissionService.class).get();
 
 								//String gym = args[1].replace("gym", "");
 
 								if (this.plugin.getConfig().getString("config.enablegroup").equals("True"))
 								{
-									if (subject.getParents().stream().filter(t -> t.getIdentifier().equals(this.plugin.getConfig().getString("config.globalgroupname")))
+									// TODO Make sure getSubjectIdentifier() is correct
+									if (subject.getParents().stream().filter(t -> t.getSubjectIdentifier().equals(this.plugin.getConfig().getString("config.globalgroupname")))
 										.findAny().isPresent())
 									{
 										playerTarget.sendMessage(Text.of(TextColors.RED, "Player is already in this group, giving them the gym permission node. (pixelgym.gym" + gym + ")"));
@@ -132,7 +141,11 @@ public class PixelGymAdminCommand implements CommandExecutor
 								else
 								{
 									String gymgroup = this.plugin.getConfig().getString("config.globalgroupname");
-									subject.getSubjectData().addParent(Sets.newHashSet(), permService.getGroupSubjects().get(gymgroup));
+
+									SubjectCollection sc2 = permService.getGroupSubjects();
+									Optional<Subject> subjO2 = sc.getSubject(gymgroup);
+
+									subject.getSubjectData().addParent(Sets.newHashSet(), subjO2.orElse(sc2.getDefaults()).asSubjectReference());
 									subject.getSubjectData().setPermission(Sets.newHashSet(), "pixelgym.gym" + gym, Tristate.TRUE);
 								}
 							}
@@ -169,14 +182,22 @@ public class PixelGymAdminCommand implements CommandExecutor
 				else if ((args[1].equalsIgnoreCase("e41")) || (args[1].equalsIgnoreCase("e42")) || (args[1].equalsIgnoreCase("e43")) || (args[1].equalsIgnoreCase("e44")))
 				{
 					Player playerTarget = Sponge.getServer().getPlayer(args[2]).orElse(null);
-					Subject subject = playerTarget.getContainingCollection().get(playerTarget.getIdentifier());
+
+					SubjectCollection sc = playerTarget.getContainingCollection();
+					Optional<Subject> subjO = sc.getSubject(playerTarget.getIdentifier());
+					Subject subject = subjO.orElse(sc.getDefaults());
+
+					//Subject subject = playerTarget.getContainingCollection().get(playerTarget.getIdentifier());
+
+
 					PermissionService permService = Sponge.getServiceManager().provide(PermissionService.class).get();
 
 					if (args[2].equals(playerTarget.getName()))
 					{
 						if (this.plugin.getConfig().getString("config.enablegroup").equals("True"))
 						{
-							if (subject.getSubjectData().getParents(Sets.newHashSet()).stream().filter(t -> t.getIdentifier().equals(this.plugin.getConfig().getString("config.globale4groupname"))).findAny().isPresent())
+							// TODO Make sure getSubjectIdentifier() is correct
+							if (subject.getSubjectData().getParents(Sets.newHashSet()).stream().filter(t -> t.getSubjectIdentifier().equals(this.plugin.getConfig().getString("config.globale4groupname"))).findAny().isPresent())
 							{
 								p.sendMessage(Text.of(TextColors.RED, "Player is already in this group, giving them the gym permission node. (pixelgym." + args[1] + ")"));
 								subject.getSubjectData().setPermission(Sets.newHashSet(), "pixelgym." + args[1], Tristate.TRUE);
@@ -184,7 +205,11 @@ public class PixelGymAdminCommand implements CommandExecutor
 							else
 							{
 								String e4group = this.plugin.getConfig().getString("config.globale4groupname");
-								subject.getSubjectData().addParent(Sets.newHashSet(), permService.getGroupSubjects().get(e4group));
+
+								SubjectCollection sc2 = permService.getGroupSubjects();
+								Optional<Subject> subjO2 = sc.getSubject(e4group);
+
+								subject.getSubjectData().addParent(Sets.newHashSet(), subjO2.orElse(sc2.getDefaults()).asSubjectReference());
 								subject.getSubjectData().setPermission(Sets.newHashSet(), "pixelgym." + args[1], Tristate.TRUE);
 							}
 						}
@@ -219,7 +244,14 @@ public class PixelGymAdminCommand implements CommandExecutor
 			{
 				
 				Player playerTarget = Sponge.getServer().getPlayer(args[2]).orElse(null);
-				Subject subject = playerTarget.getContainingCollection().get(playerTarget.getIdentifier());
+
+				SubjectCollection sc = playerTarget.getContainingCollection();
+				Optional<Subject> subjO = sc.getSubject(playerTarget.getIdentifier());
+				Subject subject = subjO.orElse(sc.getDefaults());
+
+				//Subject subject = playerTarget.getContainingCollection().get(playerTarget.getIdentifier());
+
+
 				PermissionService permService = Sponge.getServiceManager().provide(PermissionService.class).get();
 				
 				boolean gymName = false;
@@ -273,7 +305,8 @@ public class PixelGymAdminCommand implements CommandExecutor
 						
 						if (this.plugin.getConfig().getString("config.enablegroup").equals("True"))
 						{
-							if (subject.getSubjectData().getParents(Sets.newHashSet()).stream().filter(t -> t.getIdentifier().equals(this.plugin.getConfig().getString("config.globalgroupname"))).findAny().isPresent())
+							// TODO Make sure getSubjectIdentifier() is correct
+							if (subject.getSubjectData().getParents(Sets.newHashSet()).stream().filter(t -> t.getSubjectIdentifier().equals(this.plugin.getConfig().getString("config.globalgroupname"))).findAny().isPresent())
 							{
 								if (!args[1].equalsIgnoreCase("all")) {
 									subject.getSubjectData().setPermission(Sets.newHashSet(), "pixelgym.gym" + gym, Tristate.FALSE);
@@ -293,7 +326,11 @@ public class PixelGymAdminCommand implements CommandExecutor
 										}
 									}
 									else {
-										subject.getSubjectData().removeParent(Sets.newHashSet(), permService.getGroupSubjects().get(this.plugin.getConfig().getString("config.globalgroupname")));
+
+										SubjectCollection sc2 = permService.getGroupSubjects();
+										Optional<Subject> subjO2 = sc.getSubject(this.plugin.getConfig().getString("config.globalgroupname"));
+
+										subject.getSubjectData().removeParent(Sets.newHashSet(),subjO2.orElse(sc2.getDefaults()).asSubjectReference());
 										
 									}
 								}
@@ -367,7 +404,8 @@ public class PixelGymAdminCommand implements CommandExecutor
 				{
 					if (this.plugin.getConfig().getString("config.enablegroup").equals("True"))
 					{
-						if (subject.getSubjectData().getParents(Sets.newHashSet()).stream().filter(t -> t.getIdentifier().equals(this.plugin.getConfig().getString("config.globale4groupname"))).findAny().isPresent())
+						// TODO Make sure getSubjectIdentifier() is correct
+						if (subject.getSubjectData().getParents(Sets.newHashSet()).stream().filter(t -> t.getSubjectIdentifier().equals(this.plugin.getConfig().getString("config.globale4groupname"))).findAny().isPresent())
 						{
 							subject.getSubjectData().setPermission(Sets.newHashSet(), "pixelgym." + args[1], Tristate.FALSE);
 							//subject.getSubjectData().removeParent(Sets.newHashSet(), permService.getGroupSubjects().get(this.plugin.getConfig().getString("config.globale4groupname")));
@@ -386,7 +424,11 @@ public class PixelGymAdminCommand implements CommandExecutor
 										}
 									}
 									else {
-										subject.getSubjectData().removeParent(Sets.newHashSet(), permService.getGroupSubjects().get(this.plugin.getConfig().getString("config.globale4groupname")));
+
+										SubjectCollection sc2 = permService.getGroupSubjects();
+										Optional<Subject> subjO2 = sc.getSubject(this.plugin.getConfig().getString("config.globale4groupname") );
+
+										subject.getSubjectData().removeParent(Sets.newHashSet(), subjO2.orElse(sc2.getDefaults()).asSubjectReference());
 										
 									}
 								}
