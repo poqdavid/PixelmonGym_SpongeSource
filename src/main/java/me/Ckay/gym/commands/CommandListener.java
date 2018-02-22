@@ -267,7 +267,7 @@ public class CommandListener
 							// System.out.println("ItemType:" + modItemType);
 							// System.out.println("ItemStack:" + modItemStack);
 
-							if (handStack.get().getItem().getType() == modItemStack.getItem().getType())
+							if (handStack.get().getType() == modItemStack.getType())
 							{
 
 								// System.out.println("handStack = modItemStack");
@@ -1026,11 +1026,11 @@ public class CommandListener
 									Sponge.getCommandManager().process(playerToTeleport, "pay " + p.getName() + " " + getConfig().getString("config.gymfeeamount"));
 									World w = Sponge.getServer().getWorld(this.plugin.settings.getData().getString("warps.gym" + gym + ".world")).get();
 
-									TransactionResult TookMoney = account.withdraw(this.plugin.getEconomy().getDefaultCurrency(), new BigDecimal(fee), Cause.of(NamedCause.notifier(p)));
+									TransactionResult TookMoney = account.withdraw(this.plugin.getEconomy().getDefaultCurrency(), new BigDecimal(fee), Sponge.getCauseStackManager().getCurrentCause());
 
 									if (TookMoney.getResult() == ResultType.SUCCESS)
 									{
-										pAccount.deposit(this.plugin.getEconomy().getDefaultCurrency(), new BigDecimal(fee), Cause.of(NamedCause.notifier(p)));
+										pAccount.deposit(this.plugin.getEconomy().getDefaultCurrency(), new BigDecimal(fee), Sponge.getCauseStackManager().getCurrentCause());
 									}
 									else
 									{
@@ -1242,7 +1242,7 @@ public class CommandListener
 						//f
 					}
 
-					p.openInventory(myInventory_, Cause.of(NamedCause.source(this.plugin.getContainer())));
+					p.openInventory(myInventory_);
 					p.sendMessage(Text.of(TextColors.GREEN, "Opening " + playerBadges.getName() + "'s badge showcase!"));
 				}
 			}
@@ -1875,7 +1875,7 @@ public class CommandListener
 						}
 					}
 
-					String tM = p.getItemInHand(HandTypes.MAIN_HAND).get().getItem().getId();
+					String tM = p.getItemInHand(HandTypes.MAIN_HAND).get().getType().getId();
 
 					if (p.hasPermission("pixelgym.admin"))
 					{
